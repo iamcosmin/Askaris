@@ -10,11 +10,27 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.3
-  firebase_core: ^0.4.4+2
-  firebase_analytics: ^5.0.15
-  firebase_auth: ^0.16.1
-  firebase_storage: ^3.1.3
-  cloud_firestore: ^0.13.4+1
+
+  # Firebase Stack
+
+  firebase_core: ^0.5.0
+  # Database
+  cloud_firestore: ^0.14.0
+  # Storage
+  firebase_storage: ^4.0.0
+  # Authentication
+  firebase_auth: ^0.18.0
+  google_sign_in:
+  # Messaging
+  firebase_messaging: ^7.0.0
+  # Analytics
+  firebase_analytics: ^6.0.0
+  # Crashlytics
+  firebase_crashlytics: ^0.2.0
+  # Performance
+  firebase_performance: ^0.4.0
+
+  
   url_launcher: ^5.4.5
   flutter_vector_icons: ^0.2.1
   share: ^0.6.4+1
