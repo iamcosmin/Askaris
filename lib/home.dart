@@ -28,14 +28,17 @@ class HomeScreen extends State<Home> {
                 ),
                 leading: new Container(),
               ),
+              CupertinoSliverRefreshControl(
+                onRefresh: () async {
+                  return new Future.delayed(const Duration(seconds: 3));
+                },
+              ),
               SliverSafeArea(
                 top: false,
                 // This is just a big list of all the items in the settings.
                 sliver: SliverList(
                   delegate: SliverChildListDelegate(
-                    <Widget>[
-                      Container(),
-                    ],
+                    <Widget>[Container(), Text("Soon")],
                   ),
                 ),
               ),
