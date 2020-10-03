@@ -1,7 +1,7 @@
 name: askaris
 description: Transportation App
 publish_to: 'none'
-version: 1.0.3+5
+version: 1.0.4+6
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -40,16 +40,12 @@ dependencies:
   package_info: ^0.4.1
   modal_bottom_sheet: ^0.2.0+1
   webview_flutter: ^0.3.22+1
-  swipedetector: ^1.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
-
-  uses-material-design: true
-
   fonts:
     - family: Inter
       fonts:

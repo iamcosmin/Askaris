@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'auth.dart';
+import 'login.dart';
 
-class First extends StatefulWidget {
+class OOBE extends StatefulWidget {
   @override
   _FirstState createState() => _FirstState();
 }
 
-class _FirstState extends State<First> {
+class _FirstState extends State<OOBE> {
   @override
   void initState() {
     super.initState();
@@ -29,7 +29,7 @@ class _FirstState extends State<First> {
                     Icon(
                       CupertinoIcons.gift_fill,
                       size: 75,
-                      color: CupertinoColors.lightBackgroundGray,
+                      color: Colors.redAccent,
                     ),
                     Container(
                       child: Text(''),
@@ -77,8 +77,8 @@ class _FirstState extends State<First> {
                                   fontWeight: FontWeight.w500),
                             ),
                             onPressed: () => {
-                                  Navigator.push(
-                                      context, CupertinoPageRoute(builder: (context) => Auth()))
+                                  Navigator.push(context,
+                                      CupertinoPageRoute(builder: (context) => Authentication()))
                                 }),
                       ),
                     ),

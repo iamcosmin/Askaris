@@ -1,12 +1,11 @@
+import 'package:askaris/tools.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'curse.dart';
 import 'home.dart';
-import 'init/welcome.dart';
 import 'settings.dart';
 
 FirebaseAnalytics analytics;
@@ -33,7 +32,7 @@ class _MyAppState extends State<MyApp> {
       theme: CupertinoThemeData(
           brightness: Brightness.dark,
           textTheme: CupertinoTextThemeData(textStyle: TextStyle(color: Colors.white))),
-      home: FirebaseAuth.instance.currentUser != null ? MyHomePage() : First(),
+      home: Askaris.props.isAuthDiff,
     );
   }
 }
@@ -54,15 +53,15 @@ class _MyHomePageState extends State<MyHomePage> {
               CupertinoIcons.home,
               size: 25,
             ),
-            title: Text('Acasă'),
+            label: 'Acasă',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.bus, size: 25),
-            title: Text('Curse'),
+            label: 'Curse',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.settings),
-            title: Text('Setari'),
+            label: 'Setari',
           ),
         ],
       ),
