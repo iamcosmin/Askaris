@@ -4,10 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ionicons/ionicons.dart';
-import 'package:projekt_askaris/curse.dart';
+import 'curse.dart';
 import 'home.dart';
-import 'init/first.dart';
+import 'init/welcome.dart';
 import 'settings.dart';
 
 FirebaseAnalytics analytics;
@@ -33,8 +32,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Askaris',
       theme: CupertinoThemeData(
           brightness: Brightness.dark,
-          textTheme: CupertinoTextThemeData(
-              textStyle: TextStyle(color: Colors.white))),
+          textTheme: CupertinoTextThemeData(textStyle: TextStyle(color: Colors.white))),
       home: FirebaseAuth.instance.currentUser != null ? MyHomePage() : First(),
     );
   }
@@ -53,17 +51,17 @@ class _MyHomePageState extends State<MyHomePage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(
-              Ionicons.home,
+              CupertinoIcons.home,
               size: 25,
             ),
             title: Text('Acasă'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Ionicons.bus, size: 25),
+            icon: Icon(CupertinoIcons.bus, size: 25),
             title: Text('Curse'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Ionicons.cog),
+            icon: Icon(CupertinoIcons.settings),
             title: Text('Setari'),
           ),
         ],
