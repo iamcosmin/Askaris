@@ -19,6 +19,7 @@ class CourseScreen extends StatelessWidget {
                   ),
                 ),
                 leading: new Container(),
+              ),
               CupertinoSliverRefreshControl(
                 onRefresh: () async {
                   return new Future.delayed(const Duration(seconds: 3));
