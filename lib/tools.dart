@@ -52,6 +52,19 @@ class AuthUtils {
                   .showNotification(context: context, title: 'Eroare!', content: e.toString())
             });
   }
+
+  Widget triage() {
+    return StreamBuilder<User>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        // ignore: missing_return
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasData) {
+            snapshot.data.providerData.length == 1 ? MyHomePage() : OOBE();
+          } else {
+            return OOBE();
+          }
+        });
+  }
 }
 
 class Navigation {

@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
       theme: CupertinoThemeData(
           brightness: Brightness.dark,
           textTheme: CupertinoTextThemeData(textStyle: TextStyle(color: Colors.white))),
-      home: AskarisSDK.props.isAuthDiff,
+      home: AskarisSDK.auth.triage(),
     );
   }
 }
