@@ -1,4 +1,4 @@
-import 'package:askaris/tools.dart';
+import 'package:askaris/sdk/askaris_sdk.dart';
 import 'package:flutter/cupertino.dart';
 
 class Settings extends StatefulWidget {

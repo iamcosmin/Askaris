@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../tools.dart';
+import '../sdk/askaris_sdk.dart';
 import 'login.dart';
 
 class OOBE extends StatefulWidget {

@@ -83,7 +83,11 @@ android {
             resValue "string", "app_name", "Askaris"
             versionNameSuffix " beta"
         }
-    }
+    } 
+     
+     dexOptions {
+         javaMaxHeapSize "4g"
+     }
 
 }
 

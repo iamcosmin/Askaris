@@ -2,7 +2,7 @@ import 'package:askaris/init/signup.dart';
 import 'package:askaris/reusable/trailing.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../tools.dart';
+import '../sdk/askaris_sdk.dart';
 
 // ignore: must_be_immutable
 class Authentication extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:askaris/tools.dart';
+import 'package:askaris/sdk/askaris_sdk.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
       theme: CupertinoThemeData(
           brightness: Brightness.dark,
           textTheme: CupertinoTextThemeData(textStyle: TextStyle(color: Colors.white))),
-      home: AskarisSDK.auth.triage(),
+      home: AskarisSDK.auth.verify(context: context),
     );
   }
 }
