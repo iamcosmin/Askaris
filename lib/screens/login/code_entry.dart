@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tdlib_example/services/telegram_service.dart';
+import 'package:askaris/services/telegram_service.dart';
 import 'package:tdlib/td_api.dart' show TdError;
 import 'package:provider/provider.dart';
 

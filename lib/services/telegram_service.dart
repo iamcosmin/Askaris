@@ -6,10 +6,10 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:tdlib/td_client.dart';
 import 'package:tdlib/td_api.dart';
-import 'package:tdlib_example/services/locator.dart';
+import 'package:askaris/services/locator.dart';
 import 'dart:math' show Random;
 
-import 'package:tdlib_example/utils/const.dart';
+import 'package:askaris/utils/const.dart';
 
 int _random() => Random().nextInt(10000000);
 
@@ -197,8 +197,7 @@ class TelegramService extends ChangeNotifier {
   /// Synchronously executes TDLib request. May be called from any thread.
   /// Only a few requests can be executed synchronously.
   /// Returned pointer will be deallocated by TDLib during next call to clientReceive or clientExecute in the same thread, so it can't be used after that.
-  Future<TdObject> execute(TdFunction event) async =>
-      await TdClient.clientExecute(_client, event);
+  Future<TdObject> execute(TdFunction event) async => await TdClient.clientExecute(_client, event);
 
   Future setAuthenticationPhoneNumber(
     String phoneNumber, {

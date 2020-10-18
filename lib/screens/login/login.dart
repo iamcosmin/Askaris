@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tdlib/td_api.dart' show TdError;
-import 'package:tdlib_example/services/telegram_service.dart';
+import 'package:askaris/services/telegram_service.dart';
 
 import 'package:provider/provider.dart';
 import 'package:country_pickers/country.dart';
@@ -134,9 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _loadingStep = true;
     });
     context.read<TelegramService>().setAuthenticationPhoneNumber(
-          (_selectedCountry != null)
-              ? '+${_selectedCountry.phoneCode}$value'
-              : value,
+          (_selectedCountry != null) ? '+${_selectedCountry.phoneCode}$value' : value,
           onError: _handelError,
         );
   }
@@ -171,8 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  Widget _buildDialogItem(Country country, {dialog= true}) =>
-      Row(children: <Widget>[
+  Widget _buildDialogItem(Country country, {dialog = true}) => Row(children: <Widget>[
         CountryPickerUtils.getDefaultFlagImage(country),
         SizedBox(width: 8.0),
         Text("+${country.phoneCode}"),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tdlib_example/utils/router.dart' as utilrouter;
-import 'package:tdlib_example/utils/const.dart';
-import 'package:tdlib_example/services/telegram_service.dart';
-import 'package:tdlib_example/services/locator.dart';
+import 'package:askaris/utils/router.dart' as utilrouter;
+import 'package:askaris/utils/const.dart';
+import 'package:askaris/services/telegram_service.dart';
+import 'package:askaris/services/locator.dart';
 
 void main() {
   //SystemChrome.setSystemUIOverlayStyle(SystemUiOverlay.);
