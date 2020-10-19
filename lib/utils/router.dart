@@ -1,31 +1,34 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:askaris/utils/const.dart';
 import 'package:askaris/screens/login/login.dart';
 import 'package:askaris/screens/login/code_entry.dart';
+import 'package:askaris/screens/login/password_entry.dart';
 
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case otpRoute:
-        return MaterialPageRoute(
+        return CupertinoPageRoute(
           builder: (_) => CoodeEntrySreen(),
         );
       case loginRoute:
-        return MaterialPageRoute(
+        return CupertinoPageRoute(
           builder: (_) => LoginScreen(),
         );
       case initRoute:
-        return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Container(
-              color: Colors.white,
-            ),
-          ),
+        return CupertinoPageRoute(
+          builder: (_) => CupertinoPageScaffold(
+              child: CupertinoButton(
+            child: Text('End Client'),
+            onPressed: () => null,
+          )),
         );
+      case passwordRoute:
+        return CupertinoPageRoute(builder: (_) => PasswordEntrySreen());
       default:
-        return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Center(
+        return CupertinoPageRoute(
+          builder: (_) => CupertinoPageScaffold(
+            child: Center(
                 child: Text(
               'No route defined for ${settings.name}',
             )),

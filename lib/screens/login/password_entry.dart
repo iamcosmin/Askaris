@@ -4,40 +4,17 @@ import 'package:askaris/services/telegram_service.dart';
 import 'package:tdlib/td_api.dart' show TdError;
 import 'package:provider/provider.dart';
 
-class CoodeEntrySreen extends StatefulWidget {
+class PasswordEntrySreen extends StatefulWidget {
   @override
-  _CoodeEntrySreenState createState() => _CoodeEntrySreenState();
+  _PasswordEntrySreenState createState() => _PasswordEntrySreenState();
 }
 
-class _CoodeEntrySreenState extends State<CoodeEntrySreen> {
+class _PasswordEntrySreenState extends State<PasswordEntrySreen> {
   final String title = 'Submit Code';
-  final TextEditingController _codeController = TextEditingController();
-  bool _canShowButton = false;
-  String _codeError;
+  final TextEditingController _passwordController = TextEditingController();
   bool _loadingStep = false;
-
-  void codeListener() {
-    if (_codeController.text.isNotEmpty && _codeController.text.length == 5) {
-      setState(() => _canShowButton = true);
-    } else {
-      {
-        setState(() => _canShowButton = false);
-      }
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _codeController.addListener(codeListener);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _codeController.dispose();
-  }
-
+  // ignore: unused_field
+  String _codeError;
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -51,16 +28,16 @@ class _CoodeEntrySreenState extends State<CoodeEntrySreen> {
               padding: const EdgeInsets.all(30.0),
               child: Center(
                 child: CupertinoTextField(
-                  maxLength: 5,
-                  controller: _codeController,
-                  keyboardType: TextInputType.number,
-                  placeholder: "code",
+                  controller: _passwordController,
+                  keyboardType: TextInputType.text,
+                  obscureText: true,
+                  placeholder: "Password",
                   autofocus: true,
                 ),
               ),
             ),
             CupertinoButton(
-              onPressed: () => _nextStep(_codeController.text),
+              onPressed: () => _nextStep(_passwordController.text),
               child: Icon(CupertinoIcons.arrow_right),
             ),
           ],
@@ -74,6 +51,7 @@ class _CoodeEntrySreenState extends State<CoodeEntrySreen> {
           value,
           onError: _handelError,
         );
+    context.read<TelegramService>().savePassword(_passwordController.text);
   }
 
   void _handelError(TdError error) async {

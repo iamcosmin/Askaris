@@ -11,7 +11,7 @@ import 'dart:math' show Random;
 
 import 'package:askaris/utils/const.dart';
 
-int _random() => Random().nextInt(10000000);
+int _random() => Random().nextInt(11111111);
 
 class TelegramService extends ChangeNotifier {
   int _client;
@@ -35,10 +35,10 @@ class TelegramService extends ChangeNotifier {
 
   void initClient() async {
     if (_client != null) {
-      return;
+      return await TdClient.destroyClient(_client);
     }
-
     _client = await TdClient.createClient();
+
     // ignore: unused_local_variable
     PermissionStatus storagePermission =
         await Permission.storage.request(); // todo : handel storage permission
@@ -121,11 +121,11 @@ class TelegramService extends ChangeNotifier {
               systemLanguageCode: 'EN',
               filesDirectory: appExtDir.path + '/tdlib',
               databaseDirectory: appDocDir.path,
-              applicationVersion: '0.0.1',
-              deviceModel: 'Unknown',
-              systemVersion: 'Unknonw',
-              apiId: 1311145,
-              apiHash: '634c7b54b8b710ad6a36428b095e2b60',
+              applicationVersion: '0.0.1 alpha (login only)',
+              deviceModel: 'Samsung Galaxy A80 (mockup)',
+              systemVersion: 'Android 10 (mockup)',
+              apiId: 671018,
+              apiHash: '0ed6cbca0384197d7857f1b7e0d4dab4',
             ),
           ),
         );
@@ -158,6 +158,8 @@ class TelegramService extends ChangeNotifier {
       case AuthorizationStateWaitOtherDeviceConfirmation.CONSTRUCTOR:
       case AuthorizationStateWaitRegistration.CONSTRUCTOR:
       case AuthorizationStateWaitPassword.CONSTRUCTOR:
+        route = passwordRoute;
+        break;
       case AuthorizationStateLoggingOut.CONSTRUCTOR:
       case AuthorizationStateClosing.CONSTRUCTOR:
         return;
@@ -225,6 +227,20 @@ class TelegramService extends ChangeNotifier {
     final result = await send(
       CheckAuthenticationCode(
         code: code,
+      ),
+    );
+    if (result is TdError && onError != null) {
+      onError(result);
+    }
+  }
+
+  Future savePassword(
+    String password, {
+    void Function(TdError) onError,
+  }) async {
+    final result = await send(
+      CheckAuthenticationPassword(
+        password: password,
       ),
     );
     if (result is TdError && onError != null) {

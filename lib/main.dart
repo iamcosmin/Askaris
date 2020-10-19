@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:askaris/utils/router.dart' as utilrouter;
@@ -28,10 +29,10 @@ class MyApp extends StatelessWidget {
   MyApp();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
       navigatorKey: locator<NavigationService>().navigatorKey,
       title: 'Flutter Demo',
-      theme: ThemeData.dark(),
+      theme: CupertinoThemeData(brightness: Brightness.dark),
       onGenerateRoute: utilrouter.Router.generateRoute,
       initialRoute: initRoute,
     );
