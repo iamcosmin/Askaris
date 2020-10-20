@@ -20,16 +20,22 @@ class _ChatScreenState extends State<ChatScreen> {
     return Material(
       child: CupertinoPageScaffold(
         child: ListView.builder(itemBuilder: (context, index) {
-          final result = TelegramService().getChats().then((value) {
+          TelegramService().getChats().then((value) {
             switch (value.getConstructor()) {
               case TdApi.Chats.CONSTRUCTOR:
                 List chatids = TdApi.Chats().chatIds;
                 final chats = TdApi.Chats(chatIds: chatids).chatIds;
                 items = chats;
+                break;
+              case TdApi.TdError.CONSTRUCTOR:
+                items = ['Error!'];
             }
           });
-
-          return Material(child: ListTile(title: Text(items.toString())));
+          return ListTile(
+            title: Text(
+              items.toString(),
+            ),
+          );
         }),
       ),
     );
