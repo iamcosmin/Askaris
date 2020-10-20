@@ -5,6 +5,7 @@ const String loginRoute = '/login';
 const String otpRoute = '/code_entry';
 const String homeRoute = '/';
 const String passwordRoute = '/password';
+const String chatsRoute = '/home';
 
 class NavigationService {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

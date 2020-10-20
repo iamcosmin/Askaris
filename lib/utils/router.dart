@@ -1,3 +1,4 @@
+import 'package:askaris/screens/auth-based/chats.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:askaris/utils/const.dart';
 import 'package:askaris/screens/login/login.dart';
@@ -25,6 +26,8 @@ class Router {
         );
       case passwordRoute:
         return CupertinoPageRoute(builder: (_) => PasswordEntrySreen());
+      case chatsRoute:
+        return CupertinoPageRoute(builder: (_) => ChatScreen());
       default:
         return CupertinoPageRoute(
           builder: (_) => CupertinoPageScaffold(

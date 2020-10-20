@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart' show ChangeNotifier;
 import 'package:permission_handler/permission_handler.dart';
@@ -150,7 +151,7 @@ class TelegramService extends ChangeNotifier {
         route = loginRoute;
         break;
       case AuthorizationStateReady.CONSTRUCTOR:
-        route = homeRoute;
+        route = chatsRoute;
         break;
       case AuthorizationStateWaitCode.CONSTRUCTOR:
         route = otpRoute;
@@ -246,5 +247,13 @@ class TelegramService extends ChangeNotifier {
     if (result is TdError && onError != null) {
       onError(result);
     }
+  }
+
+  Future getChats() async {
+    await send(GetChats(
+      chatList: ChatListMain(),
+      limit: 10,
+      offsetOrder: 9223372036854775807,
+    ));
   }
 }

@@ -1,25 +1,37 @@
+import 'package:askaris/services/telegram_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:tdlib/td_api.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:tdlib/td_api.dart' as TdApi;
 
-class Chats extends StatefulWidget {
+class ChatScreen extends StatefulWidget {
   @override
-  _ChatsState createState() => _ChatsState();
+  _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatsState extends State<Chats> {
-  dynamic data;
-
-  dat() async {
-    ChatListMain.fromJson(data);
-    return data;
+class _ChatScreenState extends State<ChatScreen> {
+  List items;
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: Container(),
+    return Material(
+      child: CupertinoPageScaffold(
+        child: ListView.builder(itemBuilder: (context, index) {
+          final result = TelegramService().getChats().then((value) {
+            switch (value.getConstructor()) {
+              case TdApi.Chats.CONSTRUCTOR:
+                List chatids = TdApi.Chats().chatIds;
+                final chats = TdApi.Chats(chatIds: chatids).chatIds;
+                items = chats;
+            }
+          });
+
+          return Material(child: ListTile(title: Text(items.toString())));
+        }),
+      ),
     );
   }
 }
