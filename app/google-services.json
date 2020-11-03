@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "213799250622",
+    "firebase_url": "https://projekt-askaris.firebaseio.com",
+    "project_id": "projekt-askaris",
+    "storage_bucket": "projekt-askaris.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:213799250622:android:e97649a42900ed6ede4cef",
+        "android_client_info": {
+          "package_name": "com.vanto.askaris"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "213799250622-slj4np5b0is23jo7a714dtm8inps62e9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1GQa0aiYALRgzNLdQhkwnjWMLDaD5Fgc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "213799250622-slj4np5b0is23jo7a714dtm8inps62e9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
