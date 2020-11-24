@@ -2,14 +2,17 @@
 buildscript {
     ext {
         compileSdkVersion = 29
-        buildToolsVersion = '29.0.3'
+        buildToolsVersion = '30.0.2'
         minSdkVersion = 21
         targetSdkVersion = 29
-        kotlinVersion = '1.4.10'
-        compose = "1.0.0-alpha06"
-        vName = "1.0.1"
-        vCode = 26
+        kotlinVersion = '1.4.20'
+        compose = "1.0.0-alpha07"
+        vName = "1.0.3"
+        vCode = 30
+        // Kotlin Compiler
+        kCompilerVersion = "1.4.10"
     }
+
     repositories {
         google()
         jcenter()

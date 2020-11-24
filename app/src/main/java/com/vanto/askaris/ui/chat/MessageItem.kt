@@ -3,7 +3,6 @@ package com.vanto.askaris.ui.chat
 import androidx.compose.foundation.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageAsset
 import org.drinkless.td.libcore.telegram.TdApi
 
 @Composable

@@ -4,14 +4,12 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import com.vanto.askaris.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.callbackFlow
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 import java.util.*
@@ -24,11 +22,12 @@ import java.util.*
  *   <string name="telegram_api_hash">your string api hash</string>
  * </resources>
  */
-@ExperimentalCoroutinesApi
-class TelegramClient(private val application: Application) : Client.ResultHandler {
+@OptIn(ExperimentalCoroutinesApi::class)
+class TelegramClient(val application: Application) : Client.ResultHandler {
 
-    private val tag = TelegramClient::class.java.simpleName
-    val client: Client = Client.create(this, null, null)
+    private val TAG = TelegramClient::class.java.simpleName
+
+    val client = Client.create(this, null, null)
 
     private val _authState = MutableStateFlow(Authentication.UNKNOWN)
     val authState: StateFlow<Authentication> get() = _authState
@@ -48,17 +47,17 @@ class TelegramClient(private val application: Application) : Client.ResultHandle
     }
 
     override fun onResult(data: TdApi.Object) {
-        Log.d(tag, "onResult: ${data::class.java.simpleName}")
+        Log.d(TAG, "onResult: ${data::class.java.simpleName}")
         when (data.constructor) {
             TdApi.UpdateAuthorizationState.CONSTRUCTOR -> {
-                Log.d(tag, "UpdateAuthorizationState")
+                Log.d(TAG, "UpdateAuthorizationState")
                 onAuthorizationStateUpdated((data as TdApi.UpdateAuthorizationState).authorizationState)
             }
             TdApi.UpdateOption.CONSTRUCTOR -> {
 
             }
 
-            else -> Log.d(tag, "Unhandled onResult call with data: $data.")
+            else -> Log.d(TAG, "Unhandled onResult call with data: $data.")
         }
     }
 
@@ -67,7 +66,7 @@ class TelegramClient(private val application: Application) : Client.ResultHandle
     }
 
     fun startAuthentication() {
-        Log.d(tag, "startAuthentication called")
+        Log.d(TAG, "startAuthentication called")
         if (_authState.value != Authentication.UNAUTHENTICATED) {
             throw IllegalStateException("Start authentication called but client already authenticated. State: ${_authState.value}.")
         }
@@ -78,17 +77,17 @@ class TelegramClient(private val application: Application) : Client.ResultHandle
                 apiId = application.resources.getInteger(R.integer.telegram_api_id)
                 apiHash = application.getString(R.string.telegram_api_hash)
                 useMessageDatabase = true
-                useSecretChats = false
+                useSecretChats = true
                 systemLanguageCode = Locale.getDefault().language
                 databaseDirectory = application.filesDir.absolutePath
                 deviceModel = Build.MODEL
                 systemVersion = Build.VERSION.RELEASE
-                applicationVersion = "1.0 (messages only)"
+                applicationVersion = "0.1"
                 enableStorageOptimizer = true
             }
 
             client.send(TdApi.SetTdlibParameters(tdLibParameters)) {
-                Log.d(tag, "SetTdlibParameters result: $it")
+                Log.d(TAG, "SetTdlibParameters result: $it")
                 when (it.constructor) {
                     TdApi.Ok.CONSTRUCTOR -> {
                         //result.postValue(true)
@@ -157,65 +156,66 @@ class TelegramClient(private val application: Application) : Client.ResultHandle
         when (authorizationState.constructor) {
             TdApi.AuthorizationStateWaitTdlibParameters.CONSTRUCTOR -> {
                 Log.d(
-                    tag,
+                    TAG,
                     "onResult: AuthorizationStateWaitTdlibParameters -> state = UNAUTHENTICATED"
                 )
                 setAuth(Authentication.UNAUTHENTICATED)
             }
             TdApi.AuthorizationStateWaitEncryptionKey.CONSTRUCTOR -> {
-                Log.d(tag, "onResult: AuthorizationStateWaitEncryptionKey")
+                Log.d(TAG, "onResult: AuthorizationStateWaitEncryptionKey")
                 client.send(TdApi.CheckDatabaseEncryptionKey()) {
                     when (it.constructor) {
                         TdApi.Ok.CONSTRUCTOR -> {
-                            Log.d(tag, "CheckDatabaseEncryptionKey: OK")
+                            Log.d(TAG, "CheckDatabaseEncryptionKey: OK")
                         }
                         TdApi.Error.CONSTRUCTOR -> {
-                            Log.d(tag, "CheckDatabaseEncryptionKey: Error")
+                            Log.d(TAG, "CheckDatabaseEncryptionKey: Error")
                         }
                     }
                 }
             }
             TdApi.AuthorizationStateWaitPhoneNumber.CONSTRUCTOR -> {
-                Log.d(tag, "onResult: AuthorizationStateWaitPhoneNumber -> state = WAIT_FOR_NUMBER")
+                Log.d(TAG, "onResult: AuthorizationStateWaitPhoneNumber -> state = WAIT_FOR_NUMBER")
                 setAuth(Authentication.WAIT_FOR_NUMBER)
             }
             TdApi.AuthorizationStateWaitCode.CONSTRUCTOR -> {
-                Log.d(tag, "onResult: AuthorizationStateWaitCode -> state = WAIT_FOR_CODE")
+                Log.d(TAG, "onResult: AuthorizationStateWaitCode -> state = WAIT_FOR_CODE")
                 setAuth(Authentication.WAIT_FOR_CODE)
             }
             TdApi.AuthorizationStateWaitPassword.CONSTRUCTOR -> {
-                Log.d(tag, "onResult: AuthorizationStateWaitPassword")
+                Log.d(TAG, "onResult: AuthorizationStateWaitPassword")
                 setAuth(Authentication.WAIT_FOR_PASSWORD)
             }
             TdApi.AuthorizationStateReady.CONSTRUCTOR -> {
-                Log.d(tag, "onResult: AuthorizationStateReady -> state = AUTHENTICATED")
+                Log.d(TAG, "onResult: AuthorizationStateReady -> state = AUTHENTICATED")
                 setAuth(Authentication.AUTHENTICATED)
             }
             TdApi.AuthorizationStateLoggingOut.CONSTRUCTOR -> {
-                Log.d(tag, "onResult: AuthorizationStateLoggingOut")
+                Log.d(TAG, "onResult: AuthorizationStateLoggingOut")
                 setAuth(Authentication.UNAUTHENTICATED)
             }
             TdApi.AuthorizationStateClosing.CONSTRUCTOR -> {
-                Log.d(tag, "onResult: AuthorizationStateClosing")
+                Log.d(TAG, "onResult: AuthorizationStateClosing")
             }
             TdApi.AuthorizationStateClosed.CONSTRUCTOR -> {
-                Log.d(tag, "onResult: AuthorizationStateClosed")
+                Log.d(TAG, "onResult: AuthorizationStateClosed")
             }
-            else -> Log.d(tag, "Unhandled authorizationState with data: $authorizationState.")
+            else -> Log.d(TAG, "Unhandled authorizationState with data: $authorizationState.")
         }
     }
 
-    fun downloadFile(fileId: Int): Flow<Unit> = flow {
+    fun downloadFile(fileId: Int): Flow<Unit> = callbackFlow {
         client.send(TdApi.DownloadFile(fileId, 1, 0, 0, true)) {
             when (it.constructor) {
                 TdApi.Ok.CONSTRUCTOR -> {
-
+                    offer(Unit)
                 }
                 else -> {
-                    error("")
+                    cancel("", Exception(""))
+
                 }
             }
         }
-        emit(Unit)
+        awaitClose()
     }
 }

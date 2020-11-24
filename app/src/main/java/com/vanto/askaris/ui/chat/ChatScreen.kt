@@ -1,17 +1,19 @@
 package com.vanto.askaris.ui.chat
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.state
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Gif
+import androidx.compose.material.icons.outlined.AttachFile
+import androidx.compose.material.icons.outlined.Mic
+import androidx.compose.material.icons.outlined.Send
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,34 +21,86 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.ui.tooling.preview.Preview
 import com.vanto.askaris.R
 import com.vanto.askaris.data.Repository
 import com.vanto.askaris.data.Response
 import com.vanto.askaris.data.asResponse
-import com.vanto.askaris.ui.NetworkImage
+import dev.chrisbanes.accompanist.coil.CoilImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun ChatScreen(repository: Repository, chat: TdApi.Chat, modifier: Modifier = Modifier) {
-    val history =
-        repository.messages.getMessages(chat.id).asResponse().collectAsState(initial = null)
+fun ChatScreen(
+    repository: Repository,
+    chatId: Long,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val chat = repository.chats.getChat(chatId).collectAsState(null)
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                title = { Text(chat.value?.title ?: "", maxLines = 1) },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { navController.navigateUp() },
+                        icon = {
+                            Image(
+                                asset = Icons.Default.ArrowBack,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary)
+                            )
+                        }
+                    )
+                })
+        },
+        bodyContent = {
+            ChatContent(chatId, repository)
+        }
+    )
+}
+
+@Composable
+fun ChatContent(chatId: Long, repository: Repository, modifier: Modifier = Modifier) {
+    val history = repository.messages.getMessages(chatId).asResponse().collectAsState(null)
     when (val response = history.value) {
         null -> {
             ChatLoading(modifier)
         }
         is Response.Success -> {
-            Box(modifier = modifier.fillMaxWidth()) {
+            Column(modifier = modifier.fillMaxWidth()) {
                 ChatHistory(
                     repository,
                     messages = response.data,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().weight(1.0f)
                 )
-                MessageInput(modifier = Modifier.align(Alignment.BottomCenter)) {
-                    repository.messages.sendMessage()
-                }
+                val input = remember { mutableStateOf(TextFieldValue("")) }
+                val scope = rememberCoroutineScope()
+                MessageInput(
+                    input = input,
+                    insertGif = {
+                        // TODO
+                    }, attachFile = {
+                        // todo
+                    }, sendMessage = {
+                        scope.launch {
+                            repository.messages.sendMessage(
+                                chatId = chatId,
+                                inputMessageContent = TdApi.InputMessageText(
+                                    TdApi.FormattedText(
+                                        it,
+                                        emptyArray()
+                                    ), false, false
+                                )
+                            ).await()
+                            input.value = TextFieldValue()
+                        }
+                    })
             }
         }
         is Response.Error -> {
@@ -68,26 +122,18 @@ fun ChatLoading(modifier: Modifier = Modifier) {
     )
 }
 
-@ExperimentalCoroutinesApi
 @Composable
 fun ChatHistory(
     repository: Repository,
     messages: List<TdApi.Message>,
     modifier: Modifier = Modifier
 ) {
-    ScrollableColumn(
-        modifier = modifier,
-        scrollState = rememberScrollState(0f),
-        verticalArrangement = Arrangement.Bottom,
-        reverseScrollDirection = true,
-    ) {
-        messages.forEach {
-            MessageItem(repository, it)
-        }
+    LazyColumnFor(items = messages, modifier = modifier) {
+        MessageItem(repository, it)
     }
 }
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 private fun MessageItem(
     repository: Repository,
@@ -96,16 +142,17 @@ private fun MessageItem(
 ) {
     Row(
         verticalAlignment = Alignment.Bottom,
-        modifier = Modifier.clickable(onClick = {}).then(modifier.fillMaxWidth())
+        modifier = Modifier.clickable(onClick = {}) then modifier.fillMaxWidth()
     ) {
         val userPhoto =
             repository.users.getUser(message.senderUserId).collectAsState(null, Dispatchers.IO)
         val imageModifier = Modifier.padding(16.dp).size(40.dp).clip(shape = CircleShape)
-        NetworkImage(
-            url = userPhoto.value?.profilePhoto?.small?.local?.path,
-            modifier = imageModifier,
-            placeHolderRes = null
-        )
+        userPhoto.value?.profilePhoto?.small?.local?.path?.let {
+            CoilImage(
+                data = it,
+                modifier = imageModifier,
+            )
+        } ?: Box(imageModifier)
         Card(
             elevation = 1.dp,
             modifier = Modifier.padding(0.dp, 4.dp, 8.dp, 4.dp)
@@ -124,25 +171,78 @@ private fun MessageItem(
     }
 }
 
+@Preview
 @Composable
-fun MessageInput(modifier: Modifier = Modifier, onEnter: (String) -> Unit) {
-    Card(elevation = 8.dp, modifier = modifier.fillMaxWidth()) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            val input = state { TextFieldValue("Message") }
-            TextField(
-                value = input.value,
-                modifier = Modifier.weight(1.0f).then(Modifier.padding(16.dp)),
-                onValueChange = { input.value = it },
-                label = { },
-                textStyle = MaterialTheme.typography.body1
-            )
-            Image(
-                modifier = Modifier.clickable(onClick = { onEnter(input.value.text) })
-                    .padding(16.dp).clip(CircleShape),
-                asset = Icons.Default.Send,
-                alignment = Alignment.Center,
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground)
-            )
-        }
+fun PreviewMessageInput () {
+    MessageInput() {}
+}
+
+@Composable
+fun MessageInput(
+    modifier: Modifier = Modifier,
+    input: MutableState<TextFieldValue> = remember { mutableStateOf(TextFieldValue("")) },
+    insertGif: () -> Unit = {},
+    attachFile: () -> Unit = {},
+    sendMessage: (String) -> Unit = {}
+) {
+    Surface(modifier, color = MaterialTheme.colors.surface, elevation = 6.dp) {
+        TextField(
+            value = input.value,
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = { input.value = it },
+            textStyle = MaterialTheme.typography.body1,
+            placeholder = {
+                Text("Message")
+            },
+            leadingIcon = {
+                Row (
+                    horizontalArrangement = Arrangement.Center
+                        ) {
+                    IconButton(
+                        onClick = insertGif,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    ) {
+                        Image(
+                            asset = Icons.Default.Gif,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                            modifier = Modifier.align(Alignment.CenterVertically).size(30.dp)
+                        )
+                    }
+                }
+            },
+            trailingIcon = {
+                if (input.value.text.isEmpty()) {
+                    Row (
+                        horizontalArrangement = Arrangement.End
+                            ) {
+                        IconButton(onClick = attachFile, modifier = Modifier.align(Alignment.CenterVertically)) {
+                            Image(
+                                asset = Icons.Outlined.AttachFile,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                        }
+                        IconButton(onClick = { }, modifier = Modifier.align(Alignment.CenterVertically)) {
+                            Image(
+                                asset = Icons.Outlined.Mic,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                        }
+                    }
+                } else {
+                    Row (horizontalArrangement = Arrangement.Center) {
+                        IconButton(onClick = { sendMessage(input.value.text)}, modifier = Modifier.align(Alignment.CenterVertically)) {
+                            Image(
+                                asset = Icons.Outlined.Send,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                        }
+                    }
+                }
+            },
+            backgroundColor = MaterialTheme.colors.surface
+        )
     }
 }

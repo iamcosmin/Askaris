@@ -23,23 +23,23 @@
 23
 24    <uses-sdk
 25        android:minSdkVersion="10"
-25-->C:\Users\iamco\Desktop\Projekt\Applications\new_projekt_askaris_kotlin\libtd\src\main\AndroidManifest.xml
+25-->C:\Users\iamco\Desktop\Projekt\Applications\askaris\libtd\src\main\AndroidManifest.xml
 26        android:targetSdkVersion="29" />
-26-->C:\Users\iamco\Desktop\Projekt\Applications\new_projekt_askaris_kotlin\libtd\src\main\AndroidManifest.xml
+26-->C:\Users\iamco\Desktop\Projekt\Applications\askaris\libtd\src\main\AndroidManifest.xml
 27
 28    <uses-permission android:name="android.permission.INTERNET" />
-28-->C:\Users\iamco\Desktop\Projekt\Applications\new_projekt_askaris_kotlin\libtd\src\main\AndroidManifest.xml:24:5-66
-28-->C:\Users\iamco\Desktop\Projekt\Applications\new_projekt_askaris_kotlin\libtd\src\main\AndroidManifest.xml:24:22-64
+28-->C:\Users\iamco\Desktop\Projekt\Applications\askaris\libtd\src\main\AndroidManifest.xml:24:5-66
+28-->C:\Users\iamco\Desktop\Projekt\Applications\askaris\libtd\src\main\AndroidManifest.xml:24:22-64
 29    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-29-->C:\Users\iamco\Desktop\Projekt\Applications\new_projekt_askaris_kotlin\libtd\src\main\AndroidManifest.xml:25:5-80
-29-->C:\Users\iamco\Desktop\Projekt\Applications\new_projekt_askaris_kotlin\libtd\src\main\AndroidManifest.xml:25:22-78
+29-->C:\Users\iamco\Desktop\Projekt\Applications\askaris\libtd\src\main\AndroidManifest.xml:25:5-80
+29-->C:\Users\iamco\Desktop\Projekt\Applications\askaris\libtd\src\main\AndroidManifest.xml:25:22-78
 30
 31    <application
-31-->C:\Users\iamco\Desktop\Projekt\Applications\new_projekt_askaris_kotlin\libtd\src\main\AndroidManifest.xml:26:5-30:19
+31-->C:\Users\iamco\Desktop\Projekt\Applications\askaris\libtd\src\main\AndroidManifest.xml:26:5-30:19
 32        android:allowBackup="true"
-32-->C:\Users\iamco\Desktop\Projekt\Applications\new_projekt_askaris_kotlin\libtd\src\main\AndroidManifest.xml:26:18-44
+32-->C:\Users\iamco\Desktop\Projekt\Applications\askaris\libtd\src\main\AndroidManifest.xml:26:18-44
 33        android:label="@string/app_name" >
-33-->C:\Users\iamco\Desktop\Projekt\Applications\new_projekt_askaris_kotlin\libtd\src\main\AndroidManifest.xml:27:9-41
+33-->C:\Users\iamco\Desktop\Projekt\Applications\askaris\libtd\src\main\AndroidManifest.xml:27:9-41
 34    </application>
 35
 36</manifest>
